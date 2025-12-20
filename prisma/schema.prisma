@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int      @id @default(autoincrement())
+  email           String   @unique
+  password        String?  // Optional (farmers may not have password if wallet-only)
+  username        String
+  walletAddress   String?  @unique
+  role            Role
+  region          String?  // Optional for non-farmers
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  attestations    Attestation[]
+  reputation      ReputationScore?
+  authentications AuthenticatorAction[]
+}
+
+enum Role {
+  FARMER
+  LENDER
+  AUTHENTICATOR
+  ADMIN
+}
+
+model SustainablePractice {
+  id           Int    @id @default(autoincrement())
+  name         String @unique
+  description  String
+  points       Int
+
+  attestations Attestation[]
+}
+
+model Attestation {
+  id              Int               @id @default(autoincrement())
+  userId          Int
+  practiceId      Int
+  evidenceHash    String
+  imageUrl        String?           // <--- Add this
+  status          AttestationStatus @default(PENDING)
+  metadataTxHash  String?
+  attestedAt      DateTime          @default(now())
+  user            User              @relation(fields: [userId], references: [id])
+  practice        SustainablePractice @relation(fields: [practiceId], references: [id])
+  authentications AuthenticatorAction[]
+}
+
+enum AttestationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+model AuthenticatorAction {
+  id            Int      @id @default(autoincrement())
+  attestationId Int
+  userId        Int      // Authenticator who took action
+  action        String   // e.g., "approved", "rejected"
+  notes         String?
+  createdAt     DateTime @default(now())
+
+  attestation   Attestation @relation(fields: [attestationId], references: [id])
+  user          User        @relation(fields: [userId], references: [id])
+}
+
+model ReputationScore {
+  id           Int      @id @default(autoincrement())
+  score        Int      @default(0)
+  tokenAsset   String?
+  mintTxHash   String?
+
+  // This line MUST have @unique to make it unique per farmer
+  userId       Int      @unique
+
+  user         User     @relation(fields: [userId], references: [id])
+  updatedAt    DateTime @updatedAt
+}
