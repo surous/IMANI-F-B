@@ -8,6 +8,7 @@ export default function LoginForm() {
         Trusted access to green finance
       </p>
 
+      {/* LOGIN FORM */}
       <form className="space-y-4">
         <input
           type="email"
@@ -29,12 +30,36 @@ export default function LoginForm() {
         </button>
       </form>
 
-      <p className="mt-4 text-center text-sm text-gray-500">
-        Don’t have an account?{" "}
-        <a href="#" className="font-medium text-[#D4A373] hover:underline">
-          Sign up
+      {/* DIVIDER */}
+      <div className="my-6 flex items-center gap-3 text-sm text-gray-400">
+        <span className="h-px w-full bg-gray-200" />
+        OR
+        <span className="h-px w-full bg-gray-200" />
+      </div>
+
+      {/* REGISTRATION OPTIONS */}
+      <div className="space-y-3">
+        <a
+          href="/register/farmer"
+          className="block w-full rounded-lg border border-[#1F7A5F] px-4 py-2 text-center font-medium text-[#1F7A5F] hover:bg-[#1F7A5F]/10"
+        >
+          🌱 Register as Farmer
         </a>
-      </p>
+
+        <a
+          href="/register/lender"
+          className="block w-full rounded-lg border border-[#D4A373] px-4 py-2 text-center font-medium text-[#8B5E34] hover:bg-[#D4A373]/20"
+        >
+          💰 Register as Lender
+        </a>
+
+        <a
+          href="/register/authenticator"
+          className="block w-full rounded-lg border border-slate-400 px-4 py-2 text-center font-medium text-slate-700 hover:bg-slate-100"
+        >
+          ✅ Register as Authenticator
+        </a>
+      </div>
     </div>
   )
 }
