@@ -1,9 +1,7 @@
 "use client"
 
-import { AppSidebar } from "@/components/app-sidebar"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { SidebarProvider } from "@/components/ui/sidebar"
 
 export default function ProfilePage() {
   const user = {
@@ -15,56 +13,57 @@ export default function ProfilePage() {
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen bg-[#F8FAF9] text-[#1E293B]">
-        {/* Sidebar */}
-        <AppSidebar />
+    <div className="min-h-screen bg-slate-50 text-slate-900 py-12">
+      <main className="max-w-4xl mx-auto px-4">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6">Profile</h1>
 
-        {/* Main content */}
-        <main className="flex-1 p-6">
-          <h1 className="text-3xl font-bold text-[#1E293B] mb-6">Profile</h1>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Profile Card */}
+          <Card className="col-span-1 shadow">
+            <CardContent className="flex flex-col items-center text-center gap-4 p-6">
+              <img
+                src={user.avatar}
+                alt="User Avatar"
+                className="w-28 h-28 rounded-full border-2 border-slate-200 object-cover"
+              />
+              <h2 className="text-lg md:text-xl font-semibold">{user.name}</h2>
+              <p className="text-sm text-slate-600">{user.role}</p>
+              <p className="text-sm text-slate-500">{user.email}</p>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Profile Card */}
-            <Card className="col-span-1 md:col-span-1 border-l-4 border-[#1F7A5F] shadow-lg bg-[#F8FAF9]">
-              <CardContent className="flex flex-col items-center text-center gap-4 p-6">
-                <img
-                  src={user.avatar}
-                  alt="User Avatar"
-                  className="w-24 h-24 rounded-full border-2 border-[#1F7A5F] object-cover"
-                />
-                <h2 className="text-xl font-semibold text-[#1E293B]">{user.name}</h2>
-                <p className="text-[#1E293B]/80">{user.role}</p>
-                <p className="text-[#1E293B]/70">{user.email}</p>
-                <div className="mt-4">
-                  <span className="bg-[#2ECC71] text-[#F8FAF9] px-3 py-1 rounded-full font-semibold text-sm">
-                    Reputation: {user.reputation}
-                  </span>
+              <div className="w-full mt-3">
+                <div className="flex items-center justify-between text-sm text-slate-600 mb-2">
+                  <span>Reputation</span>
+                  <span className="font-medium">{user.reputation}%</span>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="w-full bg-slate-200 rounded-full h-2">
+                  <div
+                    className="h-2 rounded-full bg-emerald-500"
+                    style={{ width: `${user.reputation}%` }}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
-            {/* Actions Card */}
-            <Card className="col-span-1 md:col-span-2 border-l-4 border-[#D4A373] shadow-lg bg-[#F8FAF9]">
-              <CardHeader>
-                <CardTitle className="text-[#1E293B]">Actions</CardTitle>
-                <CardDescription>Manage your account</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col md:flex-row gap-4 p-6">
-                <Button className="flex-1 bg-[#1F7A5F] hover:bg-[#14543B] text-[#F8FAF9]">
-                  Edit Profile
-                </Button>
-                <Button className="flex-1 bg-[#D4A373] hover:bg-[#B88657] text-[#1F7A5F]">
-                  Change Password
-                </Button>
-                <Button className="flex-1 bg-red-500 hover:bg-red-600 text-white">
-                  Delete Account
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </main>
-      </div>
-    </SidebarProvider>
+          {/* Actions / Settings */}
+          <Card className="col-span-1 md:col-span-2 shadow">
+            <CardHeader>
+              <CardTitle>Account Settings</CardTitle>
+              <CardDescription>Manage your personal details and security</CardDescription>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4 p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">Edit Profile</Button>
+                <Button className="w-full bg-amber-400 hover:bg-amber-500 text-slate-900">Change Password</Button>
+              </div>
+
+              <div className="pt-2 border-t border-slate-100">
+                <Button className="w-full bg-red-500 hover:bg-red-600 text-white">Delete Account</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    </div>
   )
 }
