@@ -1,0 +1,39 @@
+// app/api/farmers/route.ts
+import { NextResponse } from 'next/server';
+import { prisma } from '../../../lib/cardano';
+import jwt from 'jsonwebtoken';
+
+const JWT_SECRET = process.env.JWT_SECRET!;
+
+function getWalletFromToken(authHeader: string | null) {
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+  const token = authHeader.split(' ')[1];
+  try {
+    const payload = jwt.verify(token, JWT_SECRET) as { walletAddress: string };
+    return payload.walletAddress;
+  } catch {
+    return null;
+  }
+}
+
+export async function GET(request: Request) {
+  const walletAddress = getWalletFromToken(request.headers.get('authorization'));
+
+  if (!walletAddress) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const farmer = await prisma.farmer.findUnique({
+    where: { walletAddress },
+    include: {
+      attestations: { include: { practice: true } },
+      reputation: true,
+    },
+  });
+
+  if (!farmer) {
+    return NextResponse.json({ error: 'Farmer not found' }, { status: 404 });
+  }
+
+  return NextResponse.json(farmer);
+}

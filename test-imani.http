@@ -1,0 +1,176 @@
+### Imani Backend Test Suite
+### Base URL (change port if needed)
+@baseUrl = http://localhost:3000
+
+
+### Test Get Sustainable Practices (API Route)
+GET {{baseUrl}}/api/practices
+
+### 1. Health Check
+GET {{baseUrl}}/
+
+### Register Farmer
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "farmer@imani.com",
+    "username": "John Farmer",
+    "walletAddress": "addr_test1vzf338575shue48t5ncustrrr2rg7h9azg4cyqd36yyd48t5ut72hg",
+    "role": "FARMER"
+}
+### 1.1 Register Lender
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "lender@imani.africa",
+    "password": "password123",
+    "username": "KCB Bank Officer",
+    "role": "LENDER"
+}
+###1.2 Register Authenticator (Admin)
+POST {{baseUrl}}/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "authenticator@imani.africa",
+    "password": "admin123",
+    "username": "Imani Admin Team",
+    "role": "AUTHENTICATOR"
+}
+### 2.Login Farmer
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+    "walletAddress": "addr_test1qzfarmer1234567890",
+    "signedMessage": "mock-signature",
+    "message": "Login to Imani"
+}
+
+### 2.1.Login lender
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "lender@imani.africa",
+    "password": "password123"
+}
+
+### 2.2.Login Authenticator (Admin)
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+    "email": "authenticator@imani.africa",
+    "password": "admin123"
+}
+# Save the token for subsequent requests
+# @name login
+
+### Extract token of farmer from login response
+@farmertoken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsInJvbGUiOiJGQVJNRVIiLCJ3YWxsZXRBZGRyZXNzIjoiYWRkcl90ZXN0MXF6ZmFybWVyMTIzNDU2Nzg5MCIsImlhdCI6MTc2NjIxODkwOCwiZXhwIjoxNzY4ODEwOTA4fQ.wt9L7F4tpWu8nlUC7Zk6b25AulvVMxUzydujhGsrpdg
+### Extract token of lender from login response
+@lenderToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjUsInJvbGUiOiJMRU5ERVIiLCJpYXQiOjE3NjYyMTk1ODYsImV4cCI6MTc2NjgyNDM4Nn0._ukOG-UQkJir7-NOHz7iQ5hsNcU_YKpvKgoxFQhdWMs
+### Extract token of authenticator from login response
+@authenticatorToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjYsInJvbGUiOiJBVVRIRU5USUNBVE9SIiwiaWF0IjoxNzY2MjE4OTczLCJleHAiOjE3NjY4MjM3NzN9.4N2UvuI4Oil-fTRq5G9X1kIMLEotVLPbLMmbIyVrOyc
+
+@BLOCKFROST_PROJECT_ID = preprodNnMiLmOoi2df1gowpcJbGvdmBfjecswI
+
+### 3. Get Sustainable Practices
+GET {{baseUrl}}/api/practices
+
+### 4. Get Farmer Profile
+GET {{baseUrl}}/api/farmers/me
+Authorization: Bearer {{farmertoken}}
+
+### 5. Submit Attestation
+POST http://localhost:3000/api/attestations
+Authorization: Bearer {{farmertoken}}
+Content-Type: multipart/form-data; boundary=----ImaniBoundary
+
+------ImaniBoundary
+Content-Disposition: form-data; name="practiceId"
+
+1
+------ImaniBoundary
+Content-Disposition: form-data; name="evidence"; filename="test.jpg"
+Content-Type: image/jpeg
+
+< ./rainwater_tank.jpg
+------ImaniBoundary--
+
+### 6. Submit Another Attestation (Solar Irrigation)
+POST http://localhost:3000/api/attestations
+Authorization: Bearer {{farmertoken}}
+Content-Type: multipart/form-data; boundary=----ImaniBoundary
+
+------ImaniBoundary
+Content-Disposition: form-data; name="practiceId"
+
+3
+------ImaniBoundary
+Content-Disposition: form-data; name="evidence"; filename="rainwater_tank.jpg"
+Content-Type: image/jpeg
+
+< ./rainwater_tank.jpg
+------ImaniBoundary--
+
+### 7. Get Farmer Reputation Report (Lender/Admin Only)
+GET {{baseUrl}}/api/lender/report/4
+Authorization: Bearer {{lenderToken}}
+
+### 7.1 Get My Own Reputation (Farmer Only)
+# No ID needed in URL - backend pulls it from the Bearer token
+GET {{baseUrl}}/api/farmers/my-reputation
+Authorization: Bearer {{farmertoken}}
+
+
+### 7.2. Verify Farmer Attestation (Now through Authenticator path)
+POST {{baseUrl}}/api/authenticator/verify
+Authorization: Bearer {{authenticatorToken}}
+Content-Type: application/json
+
+{
+    "attestationId": 6
+}
+
+### 7.3.Get Lender Report for Farmer #1
+GET http://localhost:3000/api/lender/report/4
+Authorization: Bearer {{lenderToken}}
+
+### 8. Mint Reputation Token on Cardano
+POST {{baseUrl}}/api/reputation/mint
+Authorization: Bearer {{farmertoken}}
+Content-Type: application/json
+
+{
+    "targetWallet": "addr_test1vzf338575shue48t5ncustrrr2rg7h9azg4cyqd36yyd48t5ut72hg"
+}
+
+
+### 9. Check Cardano Metadata via Blockfrost
+GET https://cardano-preprod.blockfrost.io/api/v0/txs/{{txHash}}/metadata
+project_id: {{BLOCKFROST_PROJECT_ID}}
+
+### 10. Check Mint Transaction (from logs)
+# Look in terminal for mintTxHash when score threshold reached
+
+### Optional: Test with Different Wallet
+POST {{baseUrl}}/api/auth/login
+Content-Type: application/json
+
+{
+    "walletAddress": "addr_test1qznewfarmerxyz987654321"
+}
+
+
+### Get Network Info (Test Blockfrost Connection)
+GET https://cardano-preprod.blockfrost.io/api/v0/network
+project_id: {{BLOCKFROST_PROJECT_ID}}
+
+### 11. Fetch Farmer Reputation Metadata
+# Replace {tx_hash} with a real transaction ID
+GET https://cardano-preprod.blockfrost.io/api/v0/txs/{{tx_hash}}/metadata
+project_id: {{BLOCKFROST_PROJECT_ID}}
