@@ -5,25 +5,25 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/Badge"
 import { Separator } from "@/components/ui/separator"
-import { Trophy, TrendingUp, TrendingDown, Star, Award, Shield, Crown, Zap } from "lucide-react"
+import { Trophy, TrendingUp, TrendingDown, Star, Award, Shield, Tractor, Sprout, Leaf, Activity } from "lucide-react"
 
-// Mock Data
-const currentUser = {
-  name: "Alex Doe",
-  handle: "@alexdoe",
-  reputation: 1250,
-  rank: 4,
+// Mock Data for Farmers
+const currentFarmer = {
+  name: "You (Farm Admin)",
+  handle: "Regional Manager",
+  trustScore: 98,
+  rank: "Elite",
   change: "up",
-  percentile: 92,
+  activeLoans: 12,
 }
 
-const leaderboard = [
-  { name: "Sarah Jennings", handle: "@sarah_j", reputation: 2400, rank: 1, change: "up", avatar: "/avatars/01.png", badges: ["Top Contributor", "Admin"] },
-  { name: "Michael Chen", handle: "@mchen_dev", reputation: 1950, rank: 2, change: "same", avatar: "/avatars/02.png", badges: ["Bug Hunter"] },
-  { name: "Jessica Low", handle: "@jess_low", reputation: 1800, rank: 3, change: "up", avatar: "/avatars/03.png", badges: ["Mentor"] },
-  { name: "Alex Doe", handle: "@alexdoe", reputation: 1250, rank: 4, change: "up", avatar: "/avatars/04.png", badges: ["Rising Star"] },
-  { name: "David Kim", handle: "@dkim_builds", reputation: 1100, rank: 5, change: "down", avatar: "/avatars/05.png", badges: [] },
-  { name: "Emma Wilson", handle: "@em_wils", reputation: 900, rank: 6, change: "up", avatar: "/avatars/06.png", badges: [] },
+const topFarmers = [
+  { name: "John K. (Happy Valley)", location: "Rift Valley", score: 98, yield: "120%", repayment: "100%", avatar: "/avatars/farmer1.png", badges: ["Top Yield", "Eco-Friendly"] },
+  { name: "Sarah M. (Green Acres)", location: "Central", score: 95, yield: "115%", repayment: "98%", avatar: "/avatars/farmer2.png", badges: ["Sustainable"] },
+  { name: "David O. (Highland)", location: "Western", score: 92, yield: "110%", repayment: "100%", avatar: "/avatars/farmer3.png", badges: ["Early Adopter"] },
+  { name: "Grace W. (Sunny Side)", location: "Eastern", score: 88, yield: "105%", repayment: "95%", avatar: "/avatars/farmer4.png", badges: ["Rising Star"] },
+  { name: "Samuel T. (River Bed)", location: "Coast", score: 85, yield: "98%", repayment: "92%", avatar: "/avatars/farmer5.png", badges: [] },
+  { name: "Emma L. (Valley View)", location: "Nyanza", score: 82, yield: "95%", repayment: "90%", avatar: "/avatars/farmer6.png", badges: [] },
 ]
 
 export default function ReputationPage() {
@@ -34,141 +34,125 @@ export default function ReputationPage() {
         {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-              Reputation
+            <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Farmer Trust Scores
             </h1>
             <p className="text-muted-foreground mt-2 text-lg">
-              Recognizing the community leaders making an impact.
+              Monitoring performance, reliability, and sustainable practices.
             </p>
           </div>
-          <div className="flex items-center gap-2 bg-secondary/50 p-2 rounded-lg backdrop-blur-sm border border-border/50">
-            <Trophy className="h-5 w-5 text-yellow-500" />
-            <span className="font-semibold text-sm">Season 3 Active</span>
+          <div className="flex items-center gap-2 bg-secondary/20 p-2 rounded-lg backdrop-blur-sm border border-secondary/50">
+            <Activity className="h-5 w-5 text-secondary" />
+            <span className="font-semibold text-sm text-secondary-foreground">Live Monitoring Active</span>
           </div>
         </div>
 
-        {/* My Standing Section */}
+        {/* Overview Stats */}
         <div className="grid gap-6 md:grid-cols-4">
-            <Card className="md:col-span-4 bg-gradient-to-br from-card to-secondary/30 border-primary/20 shadow-lg">
+            <Card className="md:col-span-4 bg-gradient-to-br from-card to-primary/5 border-primary/20 shadow-sm">
                 <CardHeader className="pb-2">
-                    <CardTitle className="text-lg font-medium flex items-center gap-2">
-                        <Star className="h-5 w-5 text-primary fill-primary/20" />
-                        Your Standing
+                    <CardTitle className="text-lg font-medium flex items-center gap-2 text-primary">
+                        <Shield className="h-5 w-5" />
+                        Regional Overview
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-col md:flex-row gap-6 items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <Avatar className="h-16 w-16 border-2 border-primary/20">
-                                <AvatarImage src="/avatars/04.png" alt="@alexdoe" />
-                                <AvatarFallback>AD</AvatarFallback>
-                            </Avatar>
+                            <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center border-2 border-primary/20">
+                                <Tractor className="h-8 w-8 text-primary" />
+                            </div>
                             <div>
-                                <h3 className="text-2xl font-bold">{currentUser.name}</h3>
-                                <p className="text-muted-foreground">{currentUser.handle}</p>
+                                <h3 className="text-2xl font-bold">Rift Valley Region</h3>
+                                <p className="text-muted-foreground">3 Zones Monitored</p>
                             </div>
                         </div>
                         
-                        <div className="flex gap-8 text-center">
+                        <div className="flex gap-8 text-center flex-1 justify-end">
                             <div>
-                                <p className="text-sm font-medium text-muted-foreground">Rank</p>
-                                <div className="text-3xl font-bold flex items-center gap-1 justify-center">
-                                    #{currentUser.rank}
-                                    <span className="text-xs font-normal text-green-500 bg-green-500/10 px-1.5 py-0.5 rounded-full flex items-center">
-                                        <TrendingUp className="h-3 w-3 mr-1" /> 2
+                                <p className="text-sm font-medium text-muted-foreground">Avg Trust Score</p>
+                                <div className="text-3xl font-bold flex items-center gap-1 justify-center text-primary">
+                                    92
+                                    <span className="text-xs font-normal text-accent bg-accent/10 px-1.5 py-0.5 rounded-full flex items-center">
+                                        <TrendingUp className="h-3 w-3 mr-1" /> +2%
                                     </span>
                                 </div>
                             </div>
                             <Separator orientation="vertical" className="h-12 hidden md:block" />
                             <div>
-                                <p className="text-sm font-medium text-muted-foreground">Reputation</p>
-                                <p className="text-3xl font-bold text-primary">{currentUser.reputation}</p>
+                                <p className="text-sm font-medium text-muted-foreground">Avg Yield</p>
+                                <p className="text-3xl font-bold text-secondary">112%</p>
                             </div>
                             <Separator orientation="vertical" className="h-12 hidden md:block" />
                             <div>
-                                <p className="text-sm font-medium text-muted-foreground">Percentile</p>
-                                <p className="text-3xl font-bold">Top {100 - currentUser.percentile}%</p>
+                                <p className="text-sm font-medium text-muted-foreground">Active Loans</p>
+                                <p className="text-3xl font-bold">45</p>
                             </div>
-                        </div>
-                    </div>
-                    
-                    {/* Progress to next rank */}
-                    <div className="mt-6">
-                        <div className="flex justify-between text-sm mb-2">
-                            <span className="text-muted-foreground">Progress to Rank #3</span>
-                            <span className="font-medium">1250 / 1800 XP</span>
-                        </div>
-                        <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
-                            <div className="h-full bg-primary w-[70%] rounded-full shadow-[0_0_10px_var(--color-primary)] opacity-90" />
                         </div>
                     </div>
                 </CardContent>
             </Card>
         </div>
 
-        {/* Leaderboard Section */}
+        {/* Farmers Grid */}
         <div>
             <div className="flex items-center gap-2 mb-6">
-                <Crown className="h-6 w-6 text-yellow-500" />
-                <h2 className="text-2xl font-bold tracking-tight">Community Leaders</h2>
+                <Sprout className="h-6 w-6 text-primary" />
+                <h2 className="text-2xl font-bold tracking-tight text-foreground">Top Performing Farmers</h2>
             </div>
             
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {leaderboard.map((user, i) => (
+                {topFarmers.map((farmer, i) => (
                     <Card key={i} className={`
-                        group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1 hover:border-primary/50
-                        ${i < 3 ? 'border-primary/40 bg-gradient-to-b from-card to-primary/5' : 'bg-card'}
+                        group relative overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1 hover:border-primary/50
+                        ${i < 3 ? 'border-secondary/40 bg-gradient-to-b from-card to-secondary/5' : 'bg-card'}
                     `}>
-                        <div className={`absolute top-0 right-0 p-3 font-bold text-4xl opacity-5 select-none ${i < 3 ? 'text-primary' : 'text-muted'}`}>
-                            #{user.rank}
+                        <div className={`absolute top-0 right-0 p-3 font-bold text-4xl opacity-5 select-none ${i < 3 ? 'text-secondary' : 'text-muted'}`}>
+                            #{i + 1}
                         </div>
                         
                         <CardHeader className="flex flex-row items-center gap-4 pb-2">
                              <div className="relative">
-                                <Avatar className={`h-12 w-12 ${i === 0 ? 'ring-2 ring-yellow-500' : ''}`}>
-                                    <AvatarImage src={user.avatar} />
-                                    <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                                <Avatar className={`h-12 w-12 border-2 ${i < 3 ? 'border-secondary' : 'border-transparent'}`}>
+                                    <AvatarImage src={farmer.avatar} />
+                                    <AvatarFallback className="bg-primary/10 text-primary">{farmer.name.slice(0, 1)}</AvatarFallback>
                                 </Avatar>
                                 {i < 3 && (
-                                    <div className="absolute -top-2 -right-2 bg-background rounded-full p-0.5 shadow-sm border">
-                                        {i === 0 ? <Trophy className="h-4 w-4 text-yellow-500 fill-yellow-500" /> : 
-                                         i === 1 ? <Award className="h-4 w-4 text-gray-400 fill-gray-400" /> :
-                                         <Award className="h-4 w-4 text-orange-400 fill-orange-400" />}
+                                    <div className="absolute -top-2 -right-2 bg-background rounded-full p-0.5 shadow-sm border border-secondary/20">
+                                        <Leaf className="h-4 w-4 text-secondary fill-secondary" />
                                     </div>
                                 )}
                              </div>
                              <div>
-                                <CardTitle className="text-base">{user.name}</CardTitle>
-                                <CardDescription className="text-xs">{user.handle}</CardDescription>
+                                <CardTitle className="text-base text-foreground">{farmer.name}</CardTitle>
+                                <CardDescription className="text-xs">{farmer.location}</CardDescription>
                              </div>
                         </CardHeader>
                         
                         <CardContent>
-                            <div className="flex justify-between items-end mb-4">
-                                <div>
-                                    <div className="text-2xl font-bold text-foreground">{user.reputation.toLocaleString()}</div>
-                                    <div className="text-xs text-muted-foreground uppercase tracking-wider font-semibold">Reputation</div>
+                            <div className="flex justify-between items-end mb-4 bg-muted/30 p-2 rounded-lg">
+                                <div className="text-center">
+                                    <div className="text-xl font-bold text-primary">{farmer.score}</div>
+                                    <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Trust Score</div>
                                 </div>
-                                <div className={`flex items-center text-xs font-medium ${
-                                    user.change === 'up' ? 'text-green-500' : 
-                                    user.change === 'down' ? 'text-red-500' : 'text-muted-foreground'
-                                }`}>
-                                    {user.change === 'up' && <TrendingUp className="h-3 w-3 mr-1" />}
-                                    {user.change === 'down' && <TrendingDown className="h-3 w-3 mr-1" />}
-                                    {user.change === 'same' && <span className="mr-1">-</span>}
-                                    {user.change === 'up' ? 'Rising' : user.change === 'down' ? 'Falling' : 'Stable'}
+                                <Separator orientation="vertical" className="h-8" />
+                                <div className="text-center">
+                                    <div className="text-xl font-bold text-secondary">{farmer.yield}</div>
+                                    <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Yield</div>
+                                </div>
+                                <Separator orientation="vertical" className="h-8" />
+                                <div className="text-center">
+                                    <div className="text-xl font-bold">{farmer.repayment}</div>
+                                    <div className="text-[10px] text-muted-foreground uppercase tracking-wider font-semibold">Repay</div>
                                 </div>
                             </div>
                             
                             <div className="flex flex-wrap gap-2">
-                                {user.badges.map((badge, k) => (
-                                    <Badge key={k} variant="secondary" className="text-[10px] px-2 py-0.5 h-5 bg-secondary/50 hover:bg-secondary">
+                                {farmer.badges.map((badge, k) => (
+                                    <Badge key={k} variant="secondary" className="text-[10px] px-2 py-0.5 h-5 bg-secondary/10 text-secondary-foreground hover:bg-secondary/20 border-secondary/20">
                                         {badge}
                                     </Badge>
                                 ))}
-                                {user.badges.length === 0 && (
-                                    <span className="text-xs text-muted-foreground italic h-5 flex items-center">No badges yet</span>
-                                )}
                             </div>
                         </CardContent>
                     </Card>
