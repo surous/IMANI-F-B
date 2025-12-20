@@ -17,6 +17,7 @@ import {
   IconSearch,
   IconSettings,
   IconUsers,
+  IconTrophy,
 } from "@tabler/icons-react"
 
 import { NavDocuments } from "@/components/nav-documents"
@@ -40,7 +41,8 @@ const data = {
     avatar: "/avatar-placeholder.png",
   },
   navMain: [
-    { title: "Dashboard", url: "#", icon: IconDashboard },
+    { title: "Dashboard", url: "/dashboard", icon: IconDashboard },
+    { title: "Reputation", url: "/reputation", icon: IconTrophy },
     { title: "Lifecycle", url: "#", icon: IconListDetails },
     { title: "Analytics", url: "#", icon: IconChartBar },
     { title: "Projects", url: "#", icon: IconFolder },
@@ -93,18 +95,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar
       collapsible="offcanvas"
       {...props}
-      className="bg-[#1F7A5F] text-[#F8FAF9]" // primary green bg + soft white text
+      className="border-r border-sidebar-border bg-sidebar text-sidebar-foreground"
     >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild
-              className="data-[slot=sidebar-menu-button]:!p-1.5"
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <a href="#">
-                <IconInnerShadowTop className="!size-5 text-[#F8FAF9]" />
-                <span className="text-base font-semibold text-[#F8FAF9]">Imani</span>
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                    <IconInnerShadowTop className="size-5" />
+                </div>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="truncate font-semibold">Imani</span>
+                    <span className="truncate text-xs">Platform</span>
+                </div>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -113,18 +121,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarContent>
         {/* Main Nav */}
-        <div className="[&_a]:text-[#F8FAF9] [&_a:hover]:bg-[#2ECC71]/20 [&_a-active]:bg-[#D4A373] [&_a-active]:text-[#1F7A5F]">
-          <NavMain items={data.navMain} />
-        </div>
+        <NavMain items={data.navMain} />
 
         {/* Documents */}
-        <div className="[&_a]:text-[#F8FAF9] [&_a:hover]:bg-[#2ECC71]/20 [&_a-active]:bg-[#D4A373] [&_a-active]:text-[#1F7A5F]">
-          <NavDocuments items={data.documents} />
-        </div>
+        <NavDocuments items={data.documents} />
 
         {/* Secondary Nav */}
-        {/* Secondary Nav */}
-        <div className="mt-auto [&_a]:text-[#F8FAF9] [&_a:hover]:bg-[#2ECC71]/20 [&_a-active]:bg-[#D4A373] [&_a-active]:text-[#1F7A5F]">
+        <div className="mt-auto">
           <NavSecondary items={data.navSecondary} />
         </div>
       </SidebarContent>

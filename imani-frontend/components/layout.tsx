@@ -1,57 +1,58 @@
-"use client";
+"use client"
 
-import { ReactNode, useState } from "react";
-import { Button } from "@/components/ui/button";
-import { HiMenu } from "react-icons/hi";
+import { Separator } from "@/components/ui/separator"
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
+import { Bell, Search } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
 interface LayoutProps {
-  children: ReactNode;
+  children: React.ReactNode
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
   return (
-    <div className="flex h-screen bg-softWhite">
-      {/* Sidebar */}
-      <aside
-        className={`fixed inset-y-0 left-0 w-64 bg-white shadow-md transform transition-transform duration-300
-        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0 z-50`}
-      >
-        <div className="p-6 text-2xl font-bold border-b text-primary">Imani</div>
-        <nav className="flex-1 p-4 space-y-2">
-          <a className="block px-4 py-2 rounded hover:bg-secondary font-medium text-charcoal" href="/dashboard">Dashboard</a>
-          <a className="block px-4 py-2 rounded hover:bg-secondary font-medium text-charcoal" href="/projects">Projects</a>
-          <a className="block px-4 py-2 rounded hover:bg-secondary font-medium text-charcoal" href="/users">Users</a>
-          <a className="block px-4 py-2 rounded hover:bg-secondary font-medium text-charcoal" href="/donations">Donations</a>
-        </nav>
-        <div className="p-6 border-t">
-          <Button className="w-full bg-primary hover:bg-accent text-softWhite">New Project</Button>
-        </div>
-      </aside>
-
-      {/* Main content area */}
-      <div className="flex-1 flex flex-col md:pl-64">
-        {/* Top navbar */}
-        <header className="flex items-center justify-between bg-white shadow px-4 py-3 md:px-6">
-          <div className="flex items-center space-x-2">
-            <HiMenu
-              className="w-6 h-6 md:hidden cursor-pointer text-charcoal"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-            />
-            <h1 className="text-xl font-semibold text-charcoal">Dashboard</h1>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b bg-background/60 backdrop-blur-xl px-6 sticky top-0 z-10 transition-all supports-[backdrop-filter]:bg-background/60">
+          <div className="flex items-center gap-2 mr-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
           </div>
-          <div className="flex items-center space-x-4">
-            <span className="text-charcoal font-medium">Admin</span>
-            <div className="w-8 h-8 rounded-full bg-primary text-softWhite flex items-center justify-center">
-              A
+          
+          <div className="flex flex-1 items-center justify-between gap-4">
+            <div className="relative w-full max-w-sm hidden md:block">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search..."
+                  className="w-full bg-background pl-8 md:w-[300px] lg:w-[300px]"
+                />
+            </div>
+
+            <div className="flex items-center gap-4">
+                <Button variant="ghost" size="icon" className="relative">
+                    <Bell className="h-5 w-5" />
+                    <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500 border-2 border-background"></span>
+                </Button>
+                <div className="flex items-center gap-3 pl-2 border-l">
+                    <div className="text-right hidden sm:block">
+                        <p className="text-sm font-medium leading-none">Admin User</p>
+                        <p className="text-xs text-muted-foreground">admin@imani.com</p>
+                    </div>
+                    <div className="w-9 h-9 rounded-full bg-primary/20 text-primary flex items-center justify-center font-bold text-sm ring-2 ring-background shadow-sm">
+                        AD
+                    </div>
+                </div>
             </div>
           </div>
         </header>
-
-        {/* Content */}
-        <main className="flex-1 p-6 overflow-y-auto">{children}</main>
-      </div>
-    </div>
-  );
+        <main className="flex-1 p-6 md:p-8 animate-in fade-in duration-500">
+            {children}
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
+  )
 }
