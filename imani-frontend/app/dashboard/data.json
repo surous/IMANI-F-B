@@ -1,0 +1,92 @@
+[
+  {
+    "id": "VER-001",
+    "farmer": "Amara Mwangi",
+    "region": "Rift Valley",
+    "practice": "Crop Rotation",
+    "status": "Verified",
+    "credits": 50,
+    "date": "2024-06-28"
+  },
+  {
+    "id": "VER-002",
+    "farmer": "David Ochieng",
+    "region": "Nyanza",
+    "practice": "Agroforestry",
+    "status": "Pending",
+    "credits": 0,
+    "date": "2024-06-28"
+  },
+  {
+    "id": "VER-003",
+    "farmer": "Sarah Kimani",
+    "region": "Central",
+    "practice": "Organic Fertilizer",
+    "status": "Verified",
+    "credits": 75,
+    "date": "2024-06-27"
+  },
+  {
+    "id": "VER-004",
+    "farmer": "John Korir",
+    "region": "Rift Valley",
+    "practice": "Soil Conservation",
+    "status": "Rejected",
+    "credits": 0,
+    "date": "2024-06-26"
+  },
+  {
+    "id": "VER-005",
+    "farmer": "Fatuma Ali",
+    "region": "Coast",
+    "practice": "Mangrove Restoration",
+    "status": "Verified",
+    "credits": 120,
+    "date": "2024-06-25"
+  },
+  {
+    "id": "VER-006",
+    "farmer": "James Mwangi",
+    "region": "Central",
+    "practice": "Drip Irrigation",
+    "status": "Verified",
+    "credits": 45,
+    "date": "2024-06-25"
+  },
+  {
+    "id": "VER-007",
+    "farmer": "Grace Muthoni",
+    "region": "Eastern",
+    "practice": "Terracing",
+    "status": "Pending",
+    "credits": 0,
+    "date": "2024-06-24"
+  },
+  {
+    "id": "VER-008",
+    "farmer": "Samuel Njau",
+    "region": "Central",
+    "practice": "Integrated Pest Management",
+    "status": "Verified",
+    "credits": 60,
+    "date": "2024-06-23"
+  },
+  {
+    "id": "VER-009",
+    "farmer": "Aisha Juma",
+    "region": "Coast",
+    "practice": "Sustainable Fishing",
+    "status": "Verified",
+    "credits": 90,
+    "date": "2024-06-22"
+  },
+  {
+    "id": "VER-010",
+    "farmer": "Peter Kamau",
+    "region": "Rift Valley",
+    "practice": "Regenerative Grazing",
+    "status": "Pending",
+    "credits": 0,
+    "date": "2024-06-21"
+  }
+]
