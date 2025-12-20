@@ -4,6 +4,14 @@ import { useState } from "react"
 
 type Role = "FARMER" | "LENDER" | "AUTHENTICATOR"
 
+type RegisterPayload = {
+  email: string
+  username: string
+  role: Role
+  password?: string
+  walletAddress?: string
+}
+
 export default function RegisterForm({ role }: { role: Role }) {
   const [form, setForm] = useState({
     email: "",
@@ -19,7 +27,7 @@ export default function RegisterForm({ role }: { role: Role }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const payload: any = {
+    const payload: RegisterPayload = {
       email: form.email,
       username: form.username,
       role,
