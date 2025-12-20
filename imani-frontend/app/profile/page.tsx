@@ -1,70 +1,71 @@
 "use client"
 
-import { AppSidebar } from "@/components/app-sidebar"
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { SidebarProvider } from "@/components/ui/sidebar"
-
 export default function ProfilePage() {
   const user = {
     name: "John Doe",
     email: "johndoe@example.com",
-    role: "User",
+    role: "Farmer",
     reputation: 75,
-    avatar: "/avatar-placeholder.png",
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen bg-[#F8FAF9] text-[#1E293B]">
-        {/* Sidebar */}
-        <AppSidebar />
+    <div className="min-h-screen bg-[#F8FAF9] text-slate-900 py-12">
+      <main className="max-w-4xl mx-auto px-4">
+        <h1 className="text-3xl font-bold mb-8">Profile</h1>
 
-        {/* Main content */}
-        <main className="flex-1 p-6">
-          <h1 className="text-3xl font-bold text-[#1E293B] mb-6">Profile</h1>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* PROFILE CARD */}
+          <div className="rounded-xl bg-white p-6 shadow">
+            <div className="flex flex-col items-center text-center gap-3">
+              <div className="w-24 h-24 rounded-full bg-slate-200 flex items-center justify-center text-2xl font-bold text-slate-600">
+                JD
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Profile Card */}
-            <Card className="col-span-1 md:col-span-1 border-l-4 border-[#1F7A5F] shadow-lg bg-[#F8FAF9]">
-              <CardContent className="flex flex-col items-center text-center gap-4 p-6">
-                <img
-                  src={user.avatar}
-                  alt="User Avatar"
-                  className="w-24 h-24 rounded-full border-2 border-[#1F7A5F] object-cover"
-                />
-                <h2 className="text-xl font-semibold text-[#1E293B]">{user.name}</h2>
-                <p className="text-[#1E293B]/80">{user.role}</p>
-                <p className="text-[#1E293B]/70">{user.email}</p>
-                <div className="mt-4">
-                  <span className="bg-[#2ECC71] text-[#F8FAF9] px-3 py-1 rounded-full font-semibold text-sm">
-                    Reputation: {user.reputation}
-                  </span>
+              <h2 className="text-xl font-semibold">{user.name}</h2>
+              <p className="text-sm text-slate-600">{user.role}</p>
+              <p className="text-sm text-slate-500">{user.email}</p>
+
+              {/* Reputation */}
+              <div className="w-full mt-4">
+                <div className="flex justify-between text-sm text-slate-600 mb-1">
+                  <span>Reputation</span>
+                  <span className="font-medium">{user.reputation}%</span>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Actions Card */}
-            <Card className="col-span-1 md:col-span-2 border-l-4 border-[#D4A373] shadow-lg bg-[#F8FAF9]">
-              <CardHeader>
-                <CardTitle className="text-[#1E293B]">Actions</CardTitle>
-                <CardDescription>Manage your account</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col md:flex-row gap-4 p-6">
-                <Button className="flex-1 bg-[#1F7A5F] hover:bg-[#14543B] text-[#F8FAF9]">
-                  Edit Profile
-                </Button>
-                <Button className="flex-1 bg-[#D4A373] hover:bg-[#B88657] text-[#1F7A5F]">
-                  Change Password
-                </Button>
-                <Button className="flex-1 bg-red-500 hover:bg-red-600 text-white">
-                  Delete Account
-                </Button>
-              </CardContent>
-            </Card>
+                <div className="w-full h-2 bg-slate-200 rounded-full">
+                  <div
+                    className="h-2 rounded-full bg-[#1F7A5F]"
+                    style={{ width: `${user.reputation}%` }}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-        </main>
-      </div>
-    </SidebarProvider>
+
+          {/* SETTINGS */}
+          <div className="md:col-span-2 rounded-xl bg-white p-6 shadow">
+            <h3 className="text-xl font-semibold mb-1">Account Settings</h3>
+            <p className="text-sm text-slate-600 mb-6">
+              Manage your personal details and security
+            </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <button className="rounded-lg bg-[#1F7A5F] px-4 py-3 text-white hover:bg-[#17624C]">
+                Edit Profile
+              </button>
+
+              <button className="rounded-lg bg-amber-400 px-4 py-3 text-slate-900 hover:bg-amber-500">
+                Change Password
+              </button>
+            </div>
+
+            <div className="mt-6 border-t pt-4">
+              <button className="w-full rounded-lg bg-red-500 px-4 py-3 text-white hover:bg-red-600">
+                Delete Account
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
   )
 }
