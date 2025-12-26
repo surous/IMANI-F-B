@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Separator } from "@/components/ui/separator"
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   IconLeaf,
   IconMapPin,
@@ -18,65 +19,47 @@ import {
   IconBrandCarbon,
   IconLink,
   IconWorld,
-  IconPlant2
-} from "@tabler/icons-react"  // Using Tabler icons as seen in sidebar
+  IconPlant2,
+  IconLoader
+} from "@tabler/icons-react"
+import { useEffect, useState } from "react"
 
 export default function MyFarmPage() {
-  const farmDetails = {
-    name: "Kamau Family Estate",
-    owner: "John Kamau",
-    location: "Nakuru, Rift Valley (0.3031° S, 36.0800° E)",
-    size: "12 Acres",
-    type: "Regenerative Mixed Farming",
-    crops: ["Maize (H6213)", "Climbing Beans", "Hass Avocado"],
-    established: "2015"
-  }
+  const [data, setData] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
 
-  const impactMetrics = {
-    waterSaved: "124,000 L",
-    waterSavedGrowth: "+12%",
-    soilHealth: "High (3.8% OM)",
-    soilHealthGrowth: "+0.4%", 
-    carbonSequestered: "45 Tons",
-    biodiversityIndex: "88/100"
-  }
-
-  const reputation = {
-    score: 850,
-    level: "Platinum Farmer",
-    verifiedPractices: 8,
-    lastAudit: "Oct 15, 2025"
-  }
-
-  const timeline = [
-    {
-      id: 1,
-      title: "Cover Cropping Verified",
-      date: "Dec 10, 2025",
-      status: "Verified",
-      verifier: "Sentinel-2 Satellite Analysis",
-      hash: "0x7f...8a2b",
-      description: "Post-harvest cover crops identified via NDVI spectral signature."
-    },
-    {
-      id: 2,
-      title: "Soil Sample Audit",
-      date: "Nov 22, 2025",
-      status: "Verified",
-      verifier: "Field Agent: Sarah M.",
-      hash: "0x3c...9d1e",
-      description: "Organic carbon levels verified at 3.8%. Lab report #8821 attached."
-    },
-    {
-      id: 3,
-      title: "Drip Irrigation Install",
-      date: "Oct 05, 2025",
-      status: "Pending",
-      verifier: "IoT Sensor Network",
-      hash: null,
-      description: "Flow rate data transmission initiating. Awaiting 30-day baseline."
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch('/api/farm')
+        const json = await res.json()
+        setData(json)
+      } catch (error) {
+        console.error("Failed to fetch farm data", error)
+      } finally {
+        setLoading(false)
+      }
     }
-  ]
+
+    fetchData()
+  }, [])
+
+  if (loading) {
+    return (
+      <Layout>
+         <div className="flex flex-1 flex-col gap-6 p-4 lg:gap-8 lg:p-8 animate-in fade-in duration-500 max-w-7xl mx-auto w-full items-center justify-center h-[50vh]">
+            <div className="flex flex-col items-center gap-4">
+              <IconLoader className="size-10 text-primary animate-spin" />
+              <p className="text-muted-foreground">Loading farm profile...</p>
+            </div>
+         </div>
+      </Layout>
+    )
+  }
+
+  if (!data) return null;
+
+  const { farmDetails, impactMetrics, reputation, timeline } = data
 
   return (
     <Layout>
@@ -167,7 +150,7 @@ export default function MyFarmPage() {
                  </CardHeader>
                  <CardContent>
                     <div className="relative border-l border-border/60 ml-3 space-y-8 pl-8 py-2">
-                       {timeline.map((item) => (
+                       {timeline.map((item: any) => (
                           <div key={item.id} className="relative group">
                              <div className={`absolute -left-[41px] top-1 h-5 w-5 rounded-full border-2 flex items-center justify-center bg-background ${item.status === 'Verified' ? 'border-emerald-500 text-emerald-500' : 'border-amber-500 text-amber-500'}`}>
                                 {item.status === 'Verified' ? <IconCheck className="size-3" /> : <IconClock className="size-3" />}
@@ -245,7 +228,7 @@ export default function MyFarmPage() {
                        <div className="space-y-2">
                           <p className="text-[10px] uppercase text-muted-foreground font-semibold">Primary Crops</p>
                           <div className="flex flex-wrap gap-1.5">
-                             {farmDetails.crops.map(crop => (
+                             {farmDetails.crops.map((crop: string) => (
                                 <Badge key={crop} variant="secondary" className="text-xs bg-muted text-muted-foreground hover:bg-muted/80">
                                    {crop}
                                 </Badge>

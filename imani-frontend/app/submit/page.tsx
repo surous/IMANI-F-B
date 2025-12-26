@@ -8,21 +8,58 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { IconUpload } from "@tabler/icons-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { toast } from "sonner"
+import { useRouter } from "next/navigation"
 
 export default function SubmitPage() {
+  const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [practices, setPractices] = useState<any[]>([])
+  const [selectedPractice, setSelectedPractice] = useState("")
+  const [file, setFile] = useState<File | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    fetch('/api/practices')
+      .then(res => res.json())
+      .then(data => setPractices(data))
+      .catch(err => console.error("Failed to fetch practices", err))
+  }, [])
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!selectedPractice || !file) {
+      toast.error("Please select a practice and upload evidence.")
+      return
+    }
+
     setIsSubmitting(true)
-    
-    // Simulate API call
-    setTimeout(() => {
+    const token = localStorage.getItem("token")
+
+    const formData = new FormData()
+    formData.append("practiceId", selectedPractice)
+    formData.append("evidence", file)
+
+    try {
+      const res = await fetch("/api/attestations", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        body: formData,
+      })
+
+      const result = await res.json()
+
+      if (!res.ok) throw new Error(result.error || "Submission failed")
+
+      toast.success("Attestation submitted successfully!")
+      router.push("/reputation")
+    } catch (error: any) {
+      toast.error(error.message)
+    } finally {
       setIsSubmitting(false)
-      toast.success("Request submitted successfully!")
-    }, 1500)
+    }
   }
 
   return (
@@ -42,43 +79,39 @@ export default function SubmitPage() {
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="type">Request Type</Label>
-                <Select required>
+                <Label htmlFor="type">Sustainable Practice</Label>
+                <Select required value={selectedPractice} onValueChange={setSelectedPractice}>
                   <SelectTrigger id="type">
-                    <SelectValue placeholder="Select type..." />
+                    <SelectValue placeholder="Select practice..." />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="harvest">Harvest Log</SelectItem>
-                    <SelectItem value="audit">Soil/Farm Audit</SelectItem>
-                    <SelectItem value="loan">Green Loan Application</SelectItem>
-                    <SelectItem value="credit">Green Credit Issuance</SelectItem>
-                    <SelectItem value="incident">Report Incident</SelectItem>
+                    {practices.map((p: any) => (
+                      <SelectItem key={p.id} value={p.id.toString()}>
+                        {p.name} ({p.points} pts)
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="title">Title / Reference</Label>
-                <Input id="title" placeholder="e.g., Q3 Maize Harvest or Loan for Solar Pump" required />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="description">Description & Details</Label>
-                <Textarea 
-                  id="description" 
-                  placeholder="Provide detailed information about this request..." 
-                  className="min-h-[120px]"
-                  required
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Supporting Documents</Label>
-                <div className="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center gap-2 text-muted-foreground hover:bg-muted/50 cursor-pointer transition-colors">
-                  <IconUpload className="size-8" />
-                  <div className="text-sm font-medium">Click to upload or drag and drop</div>
-                  <div className="text-xs">PDF, JPG, PNG up to 10MB</div>
-                  <Input type="file" className="hidden" />
+                <Label htmlFor="evidence">Supporting Evidence (Image)</Label>
+                <div 
+                  className={`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center gap-2 text-muted-foreground transition-colors ${file ? 'bg-primary/5 border-primary' : 'hover:bg-muted/50 cursor-pointer'}`}
+                  onClick={() => document.getElementById('file-input')?.click()}
+                >
+                  <IconUpload className={`size-8 ${file ? 'text-primary' : ''}`} />
+                  <div className="text-sm font-medium">
+                    {file ? file.name : "Click to upload or drag and drop"}
+                  </div>
+                  <div className="text-xs">JPG, PNG up to 10MB</div>
+                  <Input 
+                    id="file-input"
+                    type="file" 
+                    onChange={(e) => setFile(e.target.files?.[0] || null)}
+                    className="hidden" 
+                    accept="image/*"
+                  />
                 </div>
               </div>
             </CardContent>

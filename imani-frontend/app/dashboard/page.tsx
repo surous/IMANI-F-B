@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Layout from "@/components/layout"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/Badge"
@@ -15,6 +16,27 @@ import {
 } from "@tabler/icons-react"
 
 export default function SuperadminDashboard() {
+  const [submissions, setSubmissions] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    fetch('/api/submissions', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        setSubmissions(Array.isArray(data) ? data : [])
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error(err)
+        setLoading(false)
+      })
+  }, [])
+
+  if (loading) return <Layout><div className="p-8 text-center text-primary font-bold">Initializing Admin Console...</div></Layout>
+
   return (
     <Layout>
       <div className="space-y-8 animate-in fade-in duration-500">
@@ -53,7 +75,7 @@ export default function SuperadminDashboard() {
               <IconShieldCheck className="h-4 w-4 text-orange-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">12</div>
+              <div className="text-2xl font-bold">{submissions.length}</div>
               <p className="text-xs text-muted-foreground mt-1">
                 Requires manual review
               </p>

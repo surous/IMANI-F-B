@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useState } from "react"
 
 type Role = "FARMER" | "LENDER" | "AUTHENTICATOR"
@@ -20,12 +21,17 @@ export default function RegisterForm({ role }: { role: Role }) {
     walletAddress: "",
   })
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setLoading(true);
+    setError("");
 
     const payload: RegisterPayload = {
       email: form.email,
@@ -36,69 +42,113 @@ export default function RegisterForm({ role }: { role: Role }) {
     if (role !== "FARMER") payload.password = form.password
     if (role === "FARMER") payload.walletAddress = form.walletAddress
 
-    console.log("Submitting payload:", payload)
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      })
 
-    await fetch("{{baseUrl}}/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    })
+      const contentType = res.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Registration failed");
+        alert("Registration successful! Please log in.");
+        window.location.href = `/Login/${role.toLowerCase()}`; 
+      } else {
+        const text = await res.text();
+        console.error("Non-JSON response received:", text.substring(0, 200));
+        throw new Error(`Server returned non-JSON response (${res.status}). See console.`);
+      }
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <div className="w-full max-w-sm rounded-2xl border bg-white p-6 shadow">
-      <h1 className="mb-1 text-2xl font-bold text-slate-800">
-        Register as {role}
-      </h1>
-      <p className="mb-6 text-sm text-slate-500">
-        Create your Imani account
-      </p>
+    <div className="w-full max-w-sm rounded-2xl border bg-card p-8 shadow-lg space-y-6">
+      <div className="text-center space-y-2">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+          Join Imani
+        </h1>
+        <p className="text-sm text-muted-foreground uppercase tracking-widest font-semibold">
+           {role} REGISTRATION
+        </p>
+      </div>
 
       <form className="space-y-4" onSubmit={handleSubmit}>
-        <input
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-          className="w-full rounded-lg border px-3 py-2"
-          required
-        />
-
-        <input
-          name="username"
-          placeholder="Username"
-          onChange={handleChange}
-          className="w-full rounded-lg border px-3 py-2"
-          required
-        />
-
-        {role !== "FARMER" && (
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-muted-foreground ml-1">Email Address</label>
           <input
-            name="password"
-            type="password"
-            placeholder="Password"
+            name="email"
+            type="email"
+            placeholder="farmer@example.com"
             onChange={handleChange}
-            className="w-full rounded-lg border px-3 py-2"
+            className="w-full rounded-lg border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
             required
           />
+        </div>
+
+        <div className="space-y-1">
+          <label className="text-xs font-medium text-muted-foreground ml-1">Full Name / Username</label>
+          <input
+            name="username"
+            placeholder="John Doe"
+            onChange={handleChange}
+            className="w-full rounded-lg border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+            required
+          />
+        </div>
+
+        {role !== "FARMER" && (
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground ml-1">Password</label>
+            <input
+              name="password"
+              type="password"
+              placeholder="••••••••"
+              onChange={handleChange}
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+              required
+            />
+          </div>
         )}
 
         {role === "FARMER" && (
-          <input
-            name="walletAddress"
-            placeholder="Wallet Address"
-            onChange={handleChange}
-            className="w-full rounded-lg border px-3 py-2"
-            required
-          />
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-muted-foreground ml-1">Cardano Wallet Address</label>
+            <input
+              name="walletAddress"
+              placeholder="addr1..."
+              onChange={handleChange}
+              className="w-full rounded-lg border bg-background px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+              required
+            />
+          </div>
         )}
 
+        {error && (
+          <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-xs text-destructive text-center">
+            {error}
+          </div>
+        )}
+        
         <button
           type="submit"
-          className="w-full rounded-lg bg-[#1F7A5F] py-2 text-white hover:bg-[#17624C]"
+          disabled={loading}
+          className="w-full rounded-lg bg-primary py-2.5 text-sm font-bold text-white shadow-sm hover:translate-y-[-1px] active:translate-y-[0px] hover:shadow-md transition-all active:opacity-90 disabled:opacity-50"
         >
-          Register
+          {loading ? "Creating Account..." : `Continue as ${role.charAt(0) + role.slice(1).toLowerCase()}`}
         </button>
       </form>
+      
+      <div className="text-center">
+         <Link href="/auth" className="text-xs text-muted-foreground hover:text-primary transition-colors">
+            Choose a different role
+         </Link>
+      </div>
     </div>
   )
 }

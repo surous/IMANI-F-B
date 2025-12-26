@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Layout from "@/components/layout"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -8,15 +9,6 @@ import { Separator } from "@/components/ui/separator"
 import { Trophy, TrendingUp, TrendingDown, Star, Award, Shield, Tractor, Sprout, Leaf, Activity } from "lucide-react"
 
 // Mock Data for Farmers
-const currentFarmer = {
-  name: "You (Farm Admin)",
-  handle: "Regional Manager",
-  trustScore: 98,
-  rank: "Elite",
-  change: "up",
-  activeLoans: 12,
-}
-
 const topFarmers = [
   { name: "John K. (Happy Valley)", location: "Rift Valley", score: 98, yield: "120%", repayment: "100%", avatar: "/avatars/farmer1.png", badges: ["Top Yield", "Eco-Friendly"] },
   { name: "Sarah M. (Green Acres)", location: "Central", score: 95, yield: "115%", repayment: "98%", avatar: "/avatars/farmer2.png", badges: ["Sustainable"] },
@@ -27,6 +19,34 @@ const topFarmers = [
 ]
 
 export default function ReputationPage() {
+  const [data, setData] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const token = localStorage.getItem("token")
+    if (!token) {
+      window.location.href = "/Login/farmer"
+      return
+    }
+
+    fetch('/api/farmers/my-reputation', {
+      headers: { 'Authorization': `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(json => {
+        setData(json)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error(err)
+        setLoading(false)
+      })
+  }, [])
+
+  if (loading) return <Layout><div className="p-8 text-center">Loading your reputation score...</div></Layout>
+
+  const score = data?.myScore || 0
+  const history = data?.history || []
   return (
     <Layout>
       <div className="space-y-8 animate-in fade-in duration-500">
@@ -63,16 +83,16 @@ export default function ReputationPage() {
                                 <Tractor className="h-8 w-8 text-primary" />
                             </div>
                             <div>
-                                <h3 className="text-2xl font-bold">Rift Valley Region</h3>
-                                <p className="text-muted-foreground">3 Zones Monitored</p>
+                                <h3 className="text-2xl font-bold">{data?.username || "Farmer Profile"}</h3>
+                                <p className="text-muted-foreground">Regional Performance</p>
                             </div>
                         </div>
                         
                         <div className="flex gap-8 text-center flex-1 justify-end">
                             <div>
-                                <p className="text-sm font-medium text-muted-foreground">Avg Trust Score</p>
+                                <p className="text-sm font-medium text-muted-foreground">My Trust Score</p>
                                 <div className="text-3xl font-bold flex items-center gap-1 justify-center text-primary">
-                                    92
+                                    {score}
                                     <span className="text-xs font-normal text-accent bg-accent/10 px-1.5 py-0.5 rounded-full flex items-center">
                                         <TrendingUp className="h-3 w-3 mr-1" /> +2%
                                     </span>
