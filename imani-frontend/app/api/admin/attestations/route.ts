@@ -13,7 +13,7 @@ export async function GET(request: Request) {
 
   const attestations = await prisma.attestation.findMany({
     include: {
-      user: { select: { username, email, walletAddress } },
+      user: { select: { username: true, email: true, walletAddress: true } },
       practice: true,
     },
     orderBy: { attestedAt: 'desc' },
