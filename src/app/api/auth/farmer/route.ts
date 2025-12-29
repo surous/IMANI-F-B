@@ -24,6 +24,7 @@ export async function POST(request: Request) {
       const newFarmer = await prisma.user.create({
         data: {
           email,
+          username: email.split('@')[0],
           password: hashedPassword,
           walletAddress,
           role: 'FARMER',
