@@ -13,13 +13,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Valid wallet address required' }, { status: 400 });
     }
 
-    let farmer = await prisma.farmer.findUnique({
+    let user = await prisma.user.findUnique({
       where: { walletAddress },
     });
 
-    if (!farmer) {
-      farmer = await prisma.farmer.create({
-        data: { walletAddress },
+    if (!user) {
+      user = await prisma.user.create({
+        data: { 
+          walletAddress,
+          email: `${walletAddress}@imani.temp`, // Required field in schema
+          username: `Farmer_${walletAddress.slice(0, 6)}`,
+          role: 'FARMER'
+        },
       });
     }
 
@@ -28,7 +33,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       success: true,
       token,
-      farmer,
+      user,
     });
   } catch (error) {
     console.error('Auth error:', error);

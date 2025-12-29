@@ -1,6 +1,6 @@
 // app/api/farmers/route.ts
 import { NextResponse } from 'next/server';
-import { prisma } from '../../../lib/cardano';
+import { prisma } from '../../../lib/prisma';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET!;
@@ -23,7 +23,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const farmer = await prisma.farmer.findUnique({
+  const user = await prisma.user.findUnique({
     where: { walletAddress },
     include: {
       attestations: { include: { practice: true } },
