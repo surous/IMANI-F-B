@@ -20,8 +20,13 @@ export async function GET(request: Request) {
 
     const totalPoints = attestations.reduce((sum, a) => sum + (a.practice?.points || 0), 0);
 
+    const user = await prisma.user.findUnique({
+      where: { id: payload.userId },
+      select: { username: true }
+    });
+
     return NextResponse.json({
-      username: payload.username,
+      username: user?.username || 'Unknown',
       myScore: totalPoints,
       history: attestations.map(a => ({
         practice: a.practice?.name,
