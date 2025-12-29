@@ -83,7 +83,7 @@ export async function GET(
         history: farmer.attestations.map(a => ({
           activity: a.practice?.name,
           points: a.practice?.points,
-          date: a.createdAt,
+          date: a.attestedAt,
           evidenceHash: a.evidenceHash || "sha256_mock_hash_..."
         }))
       }
