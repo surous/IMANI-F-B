@@ -31,9 +31,9 @@ export async function GET(request: Request) {
     },
   });
 
-  if (!farmer) {
+  if (!user) {
     return NextResponse.json({ error: 'Farmer not found' }, { status: 404 });
   }
 
-  return NextResponse.json(farmer);
+  return NextResponse.json(user);
 }
