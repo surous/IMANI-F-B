@@ -63,7 +63,9 @@ export async function mintGreenReputationToken(userId: number, score: number, wa
 
   const tx = await lucid
     .newTx()
-    .mintAssets({ [unit]: BigInt(1) }, policyScript)
+    .mintAssets({ [unit]: BigInt(1) })
+    .validTo(Date.now() + 500000) // Buffer for the "before" constraint
+    .attachMintingPolicy(policyScript)
     .payToAddress(walletAddress, { [unit]: BigInt(1) })
     .complete();
 
