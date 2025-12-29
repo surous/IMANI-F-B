@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       data: {
         attestationId: attestation.id,
         userId: payload.userId,
-        action: isUntampered ? 'APPROVED' : 'REJECTED',
+        action: isUntampered ? 'VERIFIED' : 'REJECTED',
         notes: isUntampered ? 'Hash match successful.' : 'Hash mismatch: File tampered.',
       },
     });

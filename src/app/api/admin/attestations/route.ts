@@ -40,13 +40,13 @@ export async function PATCH(request: Request) {
     data: {
       attestationId: id,
       userId: payload.userId,
-      action: status === 'APPROVED' ? 'approved' : 'rejected',
+      action: status === 'VERIFIED' ? 'approved' : 'rejected',
       notes,
     },
   });
 
   // Update reputation if approved
-  if (status === 'APPROVED') {
+  if (status === 'VERIFIED') {
     await updateReputationScore(updated.userId);
   }
 
