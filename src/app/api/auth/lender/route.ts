@@ -24,6 +24,7 @@ export async function POST(request: Request) {
       const newLender = await prisma.user.create({
         data: {
           email,
+          username: email.split('@')[0],
           password: hashedPassword,
           role: 'LENDER',
         },
