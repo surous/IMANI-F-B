@@ -6,7 +6,7 @@ const JWT_SECRET = process.env.JWT_SECRET!;
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body = await request.json() as any;
     const { email, password, walletAddress, signedMessage, message } = body;
 
     // 1. Wallet-based login for farmers (Lean MVP approach)

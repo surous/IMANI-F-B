@@ -29,7 +29,7 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: 'Admin access required' }, { status: 403 });
   }
 
-  const { id, status, notes } = await request.json();
+  const { id, status, notes } = await request.json() as any;
 
   const updated = await prisma.attestation.update({
     where: { id },

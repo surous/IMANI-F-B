@@ -14,7 +14,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const { attestationId } = await request.json();
+    const { attestationId } = await request.json() as any;
 
     // 2. Fetch Attestation Data
     const attestation = await prisma.attestation.findUnique({

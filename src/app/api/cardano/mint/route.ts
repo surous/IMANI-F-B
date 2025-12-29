@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { mintGreenReputationToken } from '../../../../lib/cardano';
 
 export async function POST(request: Request) {
-  const { userId, score, walletAddress } = await request.json();
+  const { userId, score, walletAddress } = await request.json() as any;
 
   const result = await mintGreenReputationToken(userId, score, walletAddress);
 

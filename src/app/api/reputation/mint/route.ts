@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized: No valid session' }, { status: 401 });
     }
 
-    const body = await request.json();
+    const body = await request.json() as any;
     const { targetWallet } = body;
 
     // 2. Fetch Farmer Details

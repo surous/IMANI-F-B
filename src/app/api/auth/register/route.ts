@@ -4,7 +4,7 @@ import { hashPassword } from '../../../../lib/auth';
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
+    const body = await request.json() as any;
     const { email, password, username, walletAddress, region, role = 'FARMER' } = body;
 
     // 1. Minimum requirements for the database
